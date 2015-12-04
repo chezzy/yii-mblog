@@ -1,0 +1,10 @@
+{  
+  "minimum-stability" : "dev",
+  "require": {
+        "php": ">=5.3.7",
+        "yiisoft/yii": "1.1.14",
+        "ircmaxell/password-compat": "1.0.3",
+        "sendgrid/sendgrid": "2.0.4",
+        "hybridauth/hybridauth": "2.2.0.*@dev"
+  }
+}
