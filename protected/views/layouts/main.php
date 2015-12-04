@@ -29,7 +29,7 @@
                                 <li><?php echo CHtml::link('Search', $this->createUrl('timeline/search')); ?></li>
 								<?php if (Yii::app()->user->isGuest): ?>
 									<li><?php echo CHtml::link('Login', $this->createUrl('site/login')); ?></li>
-									<li><?php echo CHtml::link('Register', $this->createUrl('user/register')); ?></li>
+									<li><?php echo CHtml::link('Join', $this->createUrl('user/join')); ?></li>
 								<?php else: ?>
 									<li><?php echo CHtml::link('My Profile', $this->createUrl('user/index')); ?></li>
 									<li><?php echo CHtml::link('Logout', $this->createUrl('site/logout')); ?></li>
