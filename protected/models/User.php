@@ -88,6 +88,24 @@ class User extends CActiveRecord
 		);
 	}
 
+	public function beforeSave()
+	{
+		if ($this->isNewRecord)
+		{
+			$this->generateActivationKey();
+			$this->role_id = 1;
+		}
+
+		return parent::beforeSave();
+	}
+
+	private function generateActivationKey()
+	{
+		$factory = new CryptLib\Random\Factory;
+		$this->activation_key = $factory->getHighStrengthGenerator()->generateString(16);
+		return $this->activation_key;
+	}
+
 	/**
 	 * Checks if the currently logged in user is following the given user.
 	 * @param int $id     The ID to check
