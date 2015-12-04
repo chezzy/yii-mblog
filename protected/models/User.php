@@ -58,11 +58,13 @@ class User extends CActiveRecord
 		// NOTE: you may need to adjust the relation name and the related
 		// class name for the relations automatically generated below.
 		return array(
-			'followers' => array(self::HAS_MANY, 'Followers', 'followee_id'),
-			'followers1' => array(self::HAS_MANY, 'Followers', 'follower_id'),
-			'likes' => array(self::HAS_MANY, 'Likes', 'user_id'),
-			'shares' => array(self::HAS_MANY, 'Shares', 'author_id'),
-			'role' => array(self::BELONGS_TO, 'Roles', 'role_id'),
+			'followees' => array(self::HAS_MANY, 'Follower', 'followee_id'),
+			'followeesCount' => array(self::STAT, 'Follower', 'followee_id'),
+			'followers' => array(self::HAS_MANY, 'Follower', 'follower_id'),
+			'followersCount' => array(self::STAT, 'Follower', 'follower_id'),
+			'shares' => array(self::HAS_MANY, 'Share', 'author_id'),
+			'sharesCount' => array(self::STAT, 'Share', 'author_id'),
+			'role' => array(self::BELONGS_TO, 'Role', 'role_id'),
 		);
 	}
 
