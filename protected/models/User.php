@@ -89,6 +89,24 @@ class User extends CActiveRecord
 	}
 
 	/**
+	 * Checks if the currently logged in user is following the given user.
+	 * @param int $id     The ID to check
+	 * @return boolean
+	 */
+	public static function isFollowing($id = null)
+	{
+		if ($id == null || Yii::app()->user->isGuest())
+			return false;
+
+		$following = Follower::model()->findAllByAttributes(array(
+			'follower_id'	=> Yii::app()->user->id,
+			'followee_id'	=> $id
+		));
+
+		return $following != null;
+	}
+
+	/**
 	 * Retrieves a list of models based on the current search/filter conditions.
 	 *
 	 * Typical usecase:
