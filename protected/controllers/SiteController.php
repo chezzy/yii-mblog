@@ -17,4 +17,21 @@ class SiteController extends CController
 		$this->layout = 'main';
 		$this->render('index');
 	}
+
+	public function actionLogin()
+	{
+		$model = new LoginForm();
+
+		if (isset($_POST['LoginForm']))
+		{
+			$model->attributes = $_POST['LoginForm'];
+
+			if ($model->login())
+				$this->redirect($this->createUrl('timeline/index'));
+		}
+
+		$this->render('login', array(
+			'model' => $model
+		));
+	}
 }
