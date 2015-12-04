@@ -7,6 +7,10 @@
  */
 class UserIdentity extends CUserIdentity
 {
+	/**
+	 * The user id
+	 * @var int $_id
+	 */
 	private $_id;
 
 	/**
@@ -15,17 +19,22 @@ class UserIdentity extends CUserIdentity
 	 */
 	public function authenticate()
 	{
-		$record = User::model()->findAllByAttributes('email', $this->username);
+		$record = User::model()->findByAttributes(array('email'=>$this->username));
+
+		// $this->errorCode=self::ERROR_USERNAME_INVALID;
+		// $this->errorCode=self::ERROR_PASSWORD_INVALID;
+		// $this->errorCode=self::ERROR_NONE;
 
 		// PHP 5.5 BCRYPT
-		if ($record == null)
+		if ($record == NULL)
 			$this->errorCode = self::ERROR_UNKNOWN_IDENTITY;
 		else if (password_verify($this->password, $record->password))
 		{
-			$this->errorCode	= self::ERROR_NONE;
-			$this->_id			= $record->id;
+			$this->errorCode = self::ERROR_NONE;
+			$this->_id 		 = $record->id;
 			$this->setState('email', $record->email);
 			$this->setState('role', $record->role_id);
+			$this->setState('username', $record->username);
 		}
 		else
 			$this->errorCode = self::ERROR_UNKNOWN_IDENTITY;
@@ -33,6 +42,10 @@ class UserIdentity extends CUserIdentity
 		return !$this->errorCode;
 	}
 
+	/**
+	 * Gets the id for Yii::app()->user->id
+	 * @return int 	the user id
+	 */
 	public function getId()
 	{
 		return $this->_id;
