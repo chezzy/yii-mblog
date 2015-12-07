@@ -10,7 +10,6 @@
  * @property string $new_email
  * @property string $password
  * @property string $name
- * @property string $activation_key
  * @property integer $activated
  * @property integer $role_id
  * @property integer $created
@@ -19,12 +18,29 @@
  * The followings are the available model relations:
  * @property Followers[] $followers
  * @property Followers[] $followers1
- * @property Likes[] $likes
  * @property Shares[] $shares
  * @property Roles $role
  */
 class User extends CActiveRecord
 {
+	public $_oldAttributes = array();
+
+	/**
+	 * Adds the CTimestampBehavior to this class
+	 * @return array
+	 */
+	public function behaviors()
+	{
+		return array(
+			'CTimestampBehavior' => array(
+				'class' 			=> 'zii.behaviors.CTimestampBehavior',
+				'createAttribute' 	=> 'created',
+				'updateAttribute' 	=> 'updated',
+				'setUpdateOnCreate' => true
+			)
+		);
+	}
+
 	/**
 	 * @return string the associated database table name
 	 */
@@ -41,12 +57,11 @@ class User extends CActiveRecord
 		// NOTE: you should only define rules for those attributes that
 		// will receive user inputs.
 		return array(
-			array('email, password, name', 'required'),
+			array('email, password, name, username', 'required'),
 			array('activated, role_id, created, updated', 'numerical', 'integerOnly'=>true),
-			array('username, email, new_email, password, name, activation_key', 'length', 'max'=>255),
-			// The following rule is used by search().
-			// @todo Please remove those attributes that should not be searched.
-			array('id, username, email, new_email, password, name, activation_key, activated, role_id, created, updated', 'safe', 'on'=>'search'),
+			array('email, new_email, password, name, activation_key', 'length', 'max'=>255),
+			array('email, password, name', 'required'),
+			array('id, email, new_email, password, name, activated, role_id, created, updated', 'safe', 'on'=>'search'),
 		);
 	}
 
@@ -55,8 +70,6 @@ class User extends CActiveRecord
 	 */
 	public function relations()
 	{
-		// NOTE: you may need to adjust the relation name and the related
-		// class name for the relations automatically generated below.
 		return array(
 			'followees' => array(self::HAS_MANY, 'Follower', 'followee_id'),
 			'followeesCount' => array(self::STAT, 'Follower', 'followee_id'),
@@ -80,14 +93,47 @@ class User extends CActiveRecord
 			'new_email' => 'New Email',
 			'password' => 'Password',
 			'name' => 'Name',
-			'activation_key' => 'Activation Key',
 			'activated' => 'Activated',
+			'activation_key' => 'Activation Key',
 			'role_id' => 'Role',
 			'created' => 'Created',
 			'updated' => 'Updated',
 		);
 	}
 
+	/**
+	 * After finding a user and getting a valid result
+	 * store the old attributes in $this->_oldAttributes
+	 * @return parent::afterFind();
+	 */
+	public function afterFind()
+	{
+		if ($this !== NULL)
+			$this->_oldAttributes = $this->attributes;
+		return parent::afterFind();
+	}
+
+	/**
+	 * Before saving a user's password, password_hash it
+	 * @return parent::beforeSave()
+	 */
+	public function beforeValidate()
+	{
+		if ($this->password == NULL)
+		{
+			if (!$this->isNewRecord)
+				$this->password = $this->_oldAttributes['password'];
+		}
+		else
+			$this->password = password_hash($this->password, PASSWORD_BCRYPT, array('cost' => 13));
+
+		return parent::beforeSave();
+	}
+
+	/**
+	 * Sets the activation_key as appropriate for new users, after validation has passed
+	 * @see CController::beforeSave()
+	 */
 	public function beforeSave()
 	{
 		if ($this->isNewRecord)
@@ -99,11 +145,15 @@ class User extends CActiveRecord
 		return parent::beforeSave();
 	}
 
+	/**
+	 * Sets the activation Key
+	 * @return string
+	 */
 	private function generateActivationKey()
 	{
 		//$factory = new CryptLib\Random\Factory;
 		//$this->activation_key = $factory->getHighStrengthGenerator()->generateString(16);
-		return '3242njcnnud666kkk6k6k333312'.rand(0, 188755); //$this->activation_key;
+		return $this->activation_key = '3242njcnnud666kkk6k6k333312'.rand(0, 188755); //$this->activation_key;
 	}
 
 	/**

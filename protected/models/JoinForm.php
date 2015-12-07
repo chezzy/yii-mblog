@@ -74,6 +74,7 @@ class JoinForm extends CFormModel
             'email'     => $this->email,
             'password'  => $this->password,
             'username'  => str_replace(' ', '', $this->username),
+            'activate'  => 0,
         );
 
         if ($user->save())
