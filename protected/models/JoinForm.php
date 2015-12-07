@@ -93,6 +93,10 @@ class JoinForm extends CFormModel
             // Send an email
             $sendgrid->send($email);*/
 
+            // Local testing
+            $message = Yii::app()->controller->createAbsoluteUrl('user/activate', array('id' => $user->activation_key));
+            mail('caffeinated@example.com', 'My Subject', $message);
+
             // Return true if we get to this point
             return true;
         }

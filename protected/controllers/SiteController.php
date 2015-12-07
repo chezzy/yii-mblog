@@ -14,8 +14,11 @@ class SiteController extends CController
 
 	public function actionIndex()
 	{
+		if (!Yii::app()->user->isGuest)
+			$this->redirect($this->createUrl('timeline/index'));
+
 		$this->layout = 'main';
-		$this->render('index');
+		$this->render('index', array('loginform' => new LoginForm, 'user' => new JoinForm));
 	}
 
 	public function actionLogin()
