@@ -100,4 +100,22 @@ class UserController extends CController
 
         throw new CHttpException(500, 'An error occuring activating your account. Please try again later');
     }
+
+    public function actionForgot()
+    {
+        $form = new ForgotForm();
+
+        if (isset($_POST['ForgotForm']))
+        {
+            $form->attributes = $_POST['ForgotForm'];
+
+            if ($form->save())
+            {
+                $this->render('forgot_success');
+                Yii::app()->end();
+            }
+        }
+
+        $this->render('forgot', array('forgotform' => $form));
+    }
 }
