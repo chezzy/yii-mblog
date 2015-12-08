@@ -2,6 +2,38 @@
 
 class UserController extends CController
 {
+    /**
+     * AccessControl filter
+     * @return array
+     */
+    public function filters()
+    {
+        return array(
+            'accessControl',
+        );
+    }
+
+    /**
+     * AccessRules
+     * @return array
+     */
+    public function accessRules()
+    {
+        return array(
+            array('allow',
+                'actions' => array('register', 'forgot', 'verify', 'activate', 'resetpassword'),
+                'users' => array('*')
+            ),
+            array('allow',
+                'actions' => array('index', 'follow', 'unfollow'),
+                'users'=>array('@'),
+            ),
+            array('deny',  // deny all users
+                'users'=>array('*'),
+            ),
+        );
+    }
+
     public function actionJoin()
     {
         // Auth users shouldn't be able to register
@@ -40,6 +72,8 @@ class UserController extends CController
 
     public function actionActivate($id = null)
     {
+        echo $id; die;
+
         if ($id == null)
             throw new CHttpException(400, 'Activation ID is missing');
 
