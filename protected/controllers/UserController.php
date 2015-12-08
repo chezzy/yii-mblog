@@ -6,22 +6,22 @@ class UserController extends CController
      * AccessControl filter
      * @return array
      */
-    public function filters()
+  /*  public function filters()
     {
         return array(
             'accessControl',
         );
-    }
+    }*/
 
     /**
      * AccessRules
      * @return array
      */
-    public function accessRules()
+/*    public function accessRules()
     {
         return array(
             array('allow',
-                'actions' => array('register', 'forgot', 'verify', 'activate', 'resetpassword'),
+                'actions' => array('join', 'forgot', 'verify', 'activate', 'resetpassword'),
                 'users' => array('*')
             ),
             array('allow',
@@ -32,7 +32,7 @@ class UserController extends CController
                 'users'=>array('*'),
             ),
         );
-    }
+    }*/
 
     public function actionJoin()
     {
@@ -72,12 +72,11 @@ class UserController extends CController
 
     public function actionActivate($id = null)
     {
-        echo $id; die;
 
         if ($id == null)
             throw new CHttpException(400, 'Activation ID is missing');
 
-        $user = User::model()->findAllByAttributes(array('activation_key' => $id));
+        $user = User::model()->findByAttributes(array('activation_key' => $id));
 
         if ($user == null)
             throw new CHttpException(400, 'The activation ID you supplied is invalid');
@@ -90,6 +89,8 @@ class UserController extends CController
         $user->activated        = 1;
         $user->password         = null;
         $user->activation_key   = null;
+
+
 
         if ($user->save())
         {

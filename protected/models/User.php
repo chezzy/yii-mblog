@@ -153,7 +153,7 @@ class User extends CActiveRecord
 	{
 		//$factory = new CryptLib\Random\Factory;
 		//$this->activation_key = $factory->getHighStrengthGenerator()->generateString(16);
-		return $this->activation_key = '3242njcnnud666kkk6k6k333312'.rand(0, 188755); //$this->activation_key;
+		return $this->activation_key = '123459987855547222'.rand(0, 188755); //$this->activation_key;
 	}
 
 	/**
