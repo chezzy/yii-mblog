@@ -149,7 +149,7 @@ class User extends CActiveRecord
 	 * Sets the activation Key
 	 * @return string
 	 */
-	private function generateActivationKey()
+	public function generateActivationKey()
 	{
 		//$factory = new CryptLib\Random\Factory;
 		//$this->activation_key = $factory->getHighStrengthGenerator()->generateString(16);

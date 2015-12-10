@@ -118,4 +118,41 @@ class UserController extends CController
 
         $this->render('forgot', array('forgotform' => $form));
     }
+
+    /**
+     * Allows the user to change their password if provided with a valid activation ID
+     * @param string $id 	The activation ID that was emailed to the user
+     */
+    public function actionResetPassword($id = NULL)
+    {
+        if ($id == NULL)
+            throw new CHttpException(400, 'Missing Password Reset ID');
+
+        $user = User::model()->findByAttributes(array('activation_key' => $id));
+
+        if ($user == NULL)
+            throw new CHttpException(400, 'The password reset id you supplied is invalid');
+
+        $form = new PasswordResetForm;
+
+        if (isset($_POST['PasswordResetForm']))
+        {
+            $form->attributes = array(
+                'user' => $user,
+                'password' => $_POST['PasswordResetForm']['password'],
+                'password_repeat' => $_POST['PasswordResetForm']['password_repeat']
+            );
+
+            if ($form->save())
+            {
+                $this->render('resetpasswordsuccess');
+                Yii::app()->end();
+            }
+        }
+
+        $this->render('resetpassword', array(
+            'passwordresetform' => $form,
+            'id' => $id
+        ));
+    }
 }
