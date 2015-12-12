@@ -47,7 +47,7 @@ class UserController extends CController
             throw new CHttpException(400, 'You can not follow yourself');
 
         $follower = new Follower();
-        $follower->attribute = array(
+        $follower->attributes = array(
             'follower_id' => Yii::app()->user->id,
             'followee_id' => $id
         );
@@ -256,5 +256,19 @@ class UserController extends CController
         }
 
         throw new CHttpException(500, 'There was an error processing your request. Please try again later');
+    }
+
+    // TODO
+    public function actionFollowers($id = null)
+    {
+        return;
+    }
+    public function actionFollowing($id = null)
+    {
+        return;
+    }
+    public function actionShares($id = null)
+    {
+        return;
     }
 }

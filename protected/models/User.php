@@ -161,17 +161,14 @@ class User extends CActiveRecord
 	 * @param int $id     The ID to check
 	 * @return boolean
 	 */
-	public static function isFollowing($id = null)
+	public static function isFollowing($id = NULL)
 	{
-		if ($id == null || Yii::app()->user->isGuest())
+		if ($id == NULL || Yii::app()->user->isGuest)
 			return false;
 
-		$following = Follower::model()->findAllByAttributes(array(
-			'follower_id'	=> Yii::app()->user->id,
-			'followee_id'	=> $id
-		));
+		$following = Follower::model()->findByAttributes(array('follower_id' => Yii::app()->user->id, 'followee_id' => $id));
 
-		return $following != null;
+		return $following != NULL;
 	}
 
 	/**
