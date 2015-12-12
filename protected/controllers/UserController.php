@@ -34,6 +34,55 @@ class UserController extends CController
         );
     }
 
+    /**
+     * Allows one user to follow another
+     * @param int $id     The ID of the user to follow
+     */
+    public function actionFollow($id = null)
+    {
+        if ($id == null)
+            throw new CHttpException(400, 'You must specify the user you wish to follow');
+
+        if ($id == Yii::app()->user->id)
+            throw new CHttpException(400, 'You can not follow yourself');
+
+        $follower = new Follower();
+        $follower->attribute = array(
+            'follower_id' => Yii::app()->user->id,
+            'followee_id' => $id
+        );
+
+        if ($follower->save())
+            Yii::app()->user->setFlash('success', 'You are now  following ' . User::model()->findByPk($id)->name);
+
+        // Redirect back to where they were before
+        $this->redirect(Yii::app()->request->urlReferrer);
+    }
+
+    /**
+     * Allows one user to unfollow another
+     * @param int $id     The ID of the user to follow
+     */
+    public function actionUnFollow($id=NULL)
+    {
+        if ($id == NULL)
+            throw new CHttpException(400, 'You must specify the user you wish to unfollow');
+
+        if ($id == Yii::app()->user->id)
+            throw new CHttpException(400, 'You cannot unfollow yourself');
+
+        $follower = Follower::model()->findByAttributes(array('follower_id' => Yii::app()->user->id, 'followee_id' => $id));
+
+        if ($follower != null)
+        {
+            if ($follower->delete())
+                Yii::app()->user->setFlash('success', 'You are no longer following ' . User::model()->findByPk($id)->name);
+        }
+
+        // Redirect back to where they were before
+        $this->redirect(Yii::app()->request->urlReferrer);
+    }
+
     public function actionIndex()
     {
         $user = User::model()->findByPk(Yii::app()->user->id);
