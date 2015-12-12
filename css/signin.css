@@ -1,8 +1,8 @@
 body {
   padding-top: 40px;
   padding-bottom: 40px;
-  background-color: #f0ad4e;
-  background: radial-gradient(circle,#f4c37d,#f0ad4e);
+  background-color: #FFF; /*f0ad4e
+  background: radial-gradient(circle,#f4c37d,#f0ad4e);*/
 }
 
 h1,h2,h3,h4 {

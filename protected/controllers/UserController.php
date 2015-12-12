@@ -6,18 +6,18 @@ class UserController extends CController
      * AccessControl filter
      * @return array
      */
-  /*  public function filters()
+    public function filters()
     {
         return array(
             'accessControl',
         );
-    }*/
+    }
 
     /**
      * AccessRules
      * @return array
      */
-/*    public function accessRules()
+    public function accessRules()
     {
         return array(
             array('allow',
@@ -32,7 +32,29 @@ class UserController extends CController
                 'users'=>array('*'),
             ),
         );
-    }*/
+    }
+
+    public function actionIndex()
+    {
+        $user = User::model()->findByPk(Yii::app()->user->id);
+        $form = new ProfileForm();
+
+        if (isset($_POST['ProfileForm']))
+        {
+            $form->attributes           = $_POST['ProfileForm'];
+            $form->newpassword_repeat   = $_POST['ProfileForm']['newpassword_repeat'];
+
+            if ($form->save())
+                Yii::app()->user->setFlash('success', 'Your information has been successfully changed');
+            else
+                Yii::app()->user->setFlash('danger', 'There was an error updating your information');
+        }
+
+        $this->render('index', array(
+            'user'          => $user,
+            'profileform'   => $form
+        ));
+    }
 
     public function actionJoin()
     {
@@ -154,5 +176,36 @@ class UserController extends CController
             'passwordresetform' => $form,
             'id' => $id
         ));
+    }
+
+    /**
+     * Verifies that a user's NEW email address is valid
+     * @param string $id     The verification ID
+     */
+    public function actionVerify($id = null)
+    {
+        if ($id == null)
+            throw new CHttpException(400, 'The verify ID is missing');
+
+        $user = User::model()->findByAttributes(array('activation_key' => $id));
+
+        if ($user == null)
+            throw new CHttpException(400, 'The verification you supplied is invalid');
+
+        $user->attributes = array(
+            'email'             => $user->new_email,
+            'new_email'         => null,
+            'activated'         => 1,
+            'activation_key'    => null,
+        );
+
+        // Save the information
+        if ($user->save())
+        {
+            $this->render('verify');
+            Yii::app()->end();
+        }
+
+        throw new CHttpException(500, 'There was an error processing your request. Please try again later');
     }
 }

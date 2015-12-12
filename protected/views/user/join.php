@@ -1,6 +1,6 @@
 <div class="homepage-container">
     <div class="white-box">
-        <h3>Need a Socialii Account?</h3>
+        <h3>Need an mblog Account?</h3>
         <p>Signup here for a free account.</p>
         <?php $form=$this->beginWidget('CActiveForm', array(
             'id'					=>	'login-form',

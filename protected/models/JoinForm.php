@@ -22,7 +22,7 @@ class JoinForm extends CFormModel
         return array(
             // Email is Required, and must be an email
             array('email, username, name, password', 'required'),
-            array('password', 'length', 'min'=>8),
+            array('password', 'length', 'min'=>4),
             array('email', 'email'),
             array('username', 'validateUsername'),
             array('email', 'verifyEmailIsUnique')
