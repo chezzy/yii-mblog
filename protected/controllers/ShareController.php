@@ -141,6 +141,15 @@ class ShareController extends CController
         return $model->save();
     }
 
+    public function actionLike($id = null)
+    {
+        $share = $this->loadModel($id);
+
+        if ($share->isLiked())
+            $share->unlike();
+
+        $share->like();
+    }
     
     private function loadModel($id = null)
     {

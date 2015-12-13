@@ -17,12 +17,12 @@
            </div>
 
            <div class="actions">
-               <span class="fa fa-heart <?php //echo $data->isLiked() ? 'liked' : NULL; ?>"></span>
+               <span style="cursor: pointer" class="fa fa-heart <?php echo $data->isLiked() ? 'liked' : NULL; ?>"></span>
                <?php if ($data->author_id != Yii::app()->user->id): ?>
-                   <span class="fa fa-mail-forward"></span>
+                   <span style="cursor: pointer" class="fa fa-mail-forward"></span>
                <?php endif; ?>
                <?php if ($data->reshare_id != NULL): ?>
-                   <span class="fa fa-share liked"></span> by <?php echo CHtml::link(Share::model()->findByPk($data->reshare_id)->author->username, $this->createUrl('share/view', array('id' => $data->reshare_id))); ?>
+                   <span style="cursor: pointer" class="fa fa-share liked"></span> by <?php echo CHtml::link(Share::model()->findByPk($data->reshare_id)->author->username, $this->createUrl('share/view', array('id' => $data->reshare_id))); ?>
                <?php endif; ?>
                <?php if (!Yii::app()->user->isGuest): ?>
                    <?php echo CHtml::link(NULL, $this->createUrl('share/hybrid', array('id' => $data->id)), array('class' => 'fa fa-twitter')); ?>
