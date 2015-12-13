@@ -31,6 +31,50 @@ class TimelineController extends CController
     }
 
     /**
+     * Searches for stuff
+     */
+    public function actionSearch()
+    {
+        $query = (isset($_GET['q'])) ? $_GET['q'] : null;
+
+        // Scope
+        $users  = null;
+        $shares = null;
+
+        if ($query != null)
+        {
+            // Make the criteria object
+            $userCriteria = new CDbCriteria;
+            $searchCriteria = new CDbCriteria;
+
+            // If there is a @ symbol, do a user search
+            preg_match_all('/@([A-Za-z0-9\/\.]*)/', $query, $matches);
+            $mentions = implode(',', $matches[1]);
+            if (!empty($matches[1]))
+            {
+                $userCriteria->addInCondition('username', $matches[1]);
+                $users = User::model()->findAll($userCriteria);
+
+                // Remove the @users from the remaining query
+                foreach ($matches[1] as $u)
+                    $query = str_replace('@'.$u,'',$query);
+            }
+
+            // Do a like Query
+            $searchCriteria->addSearchCondition('text', $query);
+            $searchCriteria->limit = 30;
+
+            $shares = Share::model()->findAll($searchCriteria);
+        }
+
+        // Render the search
+        $this->render('search', array(
+            'users' => $users,
+            'shares'=> $shares
+        ));
+    }
+
+    /**
      * Main timeline action
      * Allows the user to see a timeline of a particular user
      */

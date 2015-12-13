@@ -150,7 +150,21 @@ class ShareController extends CController
 
         $share->like();
     }
-    
+
+    public function actionView($id = null)
+    {
+        $share = $this->loadModel($id);
+
+        if ($share == null)
+            throw new CHttpException(400, 'No share with that ID was found');
+
+        $this->render('view', array(
+            'share' => $share,
+            'replies' => Share::model()->findAllByAttributes(array('reply_id' => $id), array('order' => 'created DESC')),
+            'reply' => new Share
+        ));
+    }
+
     private function loadModel($id = null)
     {
         if ($id == null)

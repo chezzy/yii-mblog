@@ -40,6 +40,39 @@ class Share extends CActiveRecord
 	}
 
 	/**
+	 * Notify everyone that was @mentioned in this share by email that they were mentioned
+	 */
+	public function afterSave()
+	{
+		preg_match_all('/@([A-Za-z0-9\/\.]*)/', $this->text, $matches);
+		$mentions = implode(',', $matches[1]);
+
+		if (!empty($matches[1]))
+		{
+/*			$criteria = new CDbCriteria;
+			$criteria->addInCondition('username', $matches[1]);
+			$users = User::model()->findAll($criteria);
+
+			foreach ($users as $user)
+			{
+				$sendgrid = new SendGrid(Yii::app()->params['includes']['sendgrid']['username'], Yii::app()->params['includes']['sendgrid']['password']);
+				$email    = new SendGrid\Email();
+
+				$email->setFrom(Yii::app()->params['includes']['sendgrid']['from'])
+					->addTo($user->email)
+					->setSubject("You've Been @mentioned!")
+					->setText("You've Been @mentioned!")
+					->setHtml(Yii::app()->controller->renderPartial('//email/mention', array('share' => $this, 'user' => $user), true));
+
+				// Send the email
+				$sendgrid->send($email);
+			}*/
+		}
+
+		return parent::afterSave();
+	}
+
+	/**
 	 * @return array validation rules for model attributes.
 	 */
 	public function rules()
