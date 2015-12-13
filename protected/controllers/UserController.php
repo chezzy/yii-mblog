@@ -25,7 +25,7 @@ class UserController extends CController
                 'users' => array('*')
             ),
             array('allow',
-                'actions' => array('index', 'follow', 'unfollow'),
+                'actions' => array('index', 'follow', 'unfollow', 'followers', 'following', 'shares'),
                 'users'=>array('@'),
             ),
             array('deny',  // deny all users
@@ -261,14 +261,70 @@ class UserController extends CController
     // TODO
     public function actionFollowers($id = null)
     {
-        return;
+        if ($id == null)
+        {
+            if (Yii::app()->user->isGuest)
+                $this->redirect($this->createUrl('site/login'));
+
+            $id = Yii::app()->user->id;
+        }
+
+        $myFollowers = array();
+
+        $followers = Follower::model()->findAllByAttributes(array('followee_id' => $id));
+
+        if ($followers != null)
+        {
+            foreach($followers as $follower)
+                $myFollowers[] = $follower->follower_id;
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('id', $myFollowers);
+
+        $followers = User::model()->findAll($criteria);
+
+        $this->render('followers', array('users' => $followers));
     }
     public function actionFollowing($id = null)
     {
-        return;
+        if ($id == null)
+        {
+            if (Yii::app()->user->isGuest)
+                $this->redirect($this->createUrl('site/login'));
+
+            $id = Yii::app()->user->id;
+        }
+
+        $myFollowing = array();
+
+        $following = Follower::model()->findAllByAttributes(array('follower_id' => $id));
+
+        if ($following != null)
+        {
+            foreach($following as $followee)
+                $myFollowing[] = $followee->followee_id;
+        }
+
+        $criteria = new CDbCriteria();
+        $criteria->addInCondition('id', $myFollowing);
+
+        $following = User::model()->findAll($criteria);
+
+        $this->render('following', array('users' => $following));
     }
     public function actionShares($id = null)
     {
-        return;
+        if ($id == null)
+        {
+            if (Yii::app()->user->isGuest)
+                $this->redirect($this->createUrl('site/login'));
+
+            $id = Yii::app()->user->id;
+        }
+
+        $shares = Share::model()->findAllByAttributes(array('author_id' => $id));
+
+        $this->render('shares', array('shares' => $shares));
     }
 }
