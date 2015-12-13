@@ -58,6 +58,7 @@
     <div class="shares white-box pull-left">
        <?php Yii::app()->clientScript->registerScript('loadshares', '$.get("' . $this->createUrl('share/getshares', array('id' => $id)) . '", function(data) { $(".shares").html(data); }); '); ?>
     </div>
+
 </div>
 
 <?php Yii::app()->clientScript->registerScript('share', '

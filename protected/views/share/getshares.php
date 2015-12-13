@@ -3,6 +3,7 @@
     'itemView'=>'share',
     'emptyText' => '<div class="center">This user hasn\'t shared anything yet!</div>',
     'template' => '{items}{pager}',
+    'viewData' => array( 'user' => 'own_var' ),
     'afterAjaxUpdate' => 'js:function() { init(); }
     ',
     'pager' => array(
